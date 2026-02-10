@@ -1,204 +1,64 @@
 <!doctype html>
-<html lang="fi">
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Taxi Exam Practice</title>
-  <style>
-    :root { --bg:#f6f7fb; --card:#fff; --text:#111; --muted:#666; --border:#e6e6ee; }
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;background:var(--bg);color:var(--text)}
-    .wrap{max-width:880px;margin:0 auto;padding:16px}
-    header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-    h1{font-size:20px;margin:0}
-    .pill{border:1px solid var(--border);padding:6px 10px;border-radius:999px;font-size:12px;color:var(--muted);background:#fff}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-top:14px}
-    .progress{height:10px;background:#eee;border-radius:999px;overflow:hidden;margin-top:10px}
-    .bar{height:100%;width:0%;background:#111}
-    .qtitle{font-weight:800;margin:0 0 12px 0;font-size:22px;line-height:1.3}
-    .opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:12px;padding:12px;margin:10px 0;cursor:pointer}
-    .opt input{margin-top:3px}
-    button{border:1px solid var(--border);background:#fff;border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
-    button.primary{background:#111;color:#fff;border-color:#111}
-    button:disabled{opacity:.5;cursor:not-allowed}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
-    .centerRow{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
-    .muted{color:var(--muted)}
-    .scoreBox{margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:12px;background:#fff}
-    .ok{color:#0a7a2f;font-weight:800}
-    .bad{color:#b00020;font-weight:800}
-  </style>
+  <meta charset="utf-8">
+  <title>Taxi Exam Prep</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
+
 <body>
-  <div class="wrap">
-    <header>
-      <h1>Taxi Exam Practice</h1>
-      <div class="centerRow">
-        <span class="pill" id="metaPill">0 questions</span>
-        <button id="resetBtn">Reset</button>
-      </div>
-    </header>
 
-    <div class="card">
-      <div class="row">
-        <span class="pill" id="progressText">Question 0 / 0</span>
-        <span class="pill" id="scoreText">Score: —</span>
-      </div>
-      <div class="progress"><div class="bar" id="bar"></div></div>
-    </div>
+<!-- NAVBAR -->
+<header class="nav">
+  <div>🚕 Taxi Exam Prep</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="topics.html">Topics</a>
+    <a href="glossary.html">Glossary</a>
+    <a href="flashcards.html">Flashcards</a>
+    <a href="quiz.html">Quiz</a>
+    <a href="pdf.html">PDF</a>
+  </nav>
+</header>
 
-    <div class="card" id="quizCard">
-      <h2 class="qtitle" id="qTitle">Loading…</h2>
-      <div id="options"></div>
+<!-- HOME CONTENT -->
+<div class="container">
 
-      <div class="centerRow" style="margin-top:14px">
-        <button id="prevBtn">← Prev</button>
-        <button id="submitBtn" class="primary">Submit</button>
-        <button id="nextBtn">Next →</button>
-      </div>
+  <h1>Taxi Exam Preparation Website</h1>
+  <p>
+    Finland Taxi Exam এর জন্য Notes, Vocabulary, Flashcards,
+    Quiz এবং Questions PDF — সব এক জায়গায়।
+  </p>
 
-      <div id="resultBox" class="scoreBox muted" style="display:none;"></div>
-    </div>
+  <!-- CARDS -->
+  <div class="cards">
+
+    <a class="card" href="topics.html">
+      📚 Study Topics
+    </a>
+
+    <a class="card" href="glossary.html">
+      🔎 Glossary
+    </a>
+
+    <a class="card" href="flashcards.html">
+      🧠 Flashcards
+    </a>
+
+    <a class="card" href="quiz.html">
+      ✅ Practice Quiz
+    </a>
+
+    <a class="card" href="pdf.html">
+      📄 Questions PDF
+    </a>
+
   </div>
 
-  <script src="questions.js"></script>
-  <script>
-    const LS_KEY = "taxi_quiz_state_clean_v1";
+</div>
 
-    let questions = Array.isArray(window.QUESTIONS) ? [...window.QUESTIONS] : [];
-    let state = { order: [], idx: 0, answers: {}, submitted: false };
-
-    const el = (id) => document.getElementById(id);
-
-    function save(){ localStorage.setItem(LS_KEY, JSON.stringify({ state })); }
-    function load(){
-      try {
-        const raw = localStorage.getItem(LS_KEY);
-        if (!raw) return;
-        const parsed = JSON.parse(raw);
-        if (parsed.state) state = parsed.state;
-      } catch {}
-    }
-
-    function initOrder(){
-      if (!Array.isArray(state.order) || state.order.length !== questions.length) {
-        state.order = questions.map(q => q.id);
-        state.idx = 0;
-        state.answers = {};
-        state.submitted = false;
-      }
-    }
-
-    function getQById(id){ return questions.find(q => q.id === id); }
-    function currentQ(){ return getQById(state.order[state.idx]); }
-
-    function renderMeta(){
-      el("metaPill").textContent = `${questions.length} questions`;
-    }
-
-    function renderProgress(){
-      const total = Math.max(questions.length, 1);
-      el("progressText").textContent = `Question ${Math.min(state.idx+1,total)} / ${total}`;
-      el("bar").style.width = `${(state.idx / total) * 100}%`;
-    }
-
-    function calcScore(){
-      let correct = 0;
-      for (const q of questions) {
-        if (state.answers[q.id] === q.answerIndex) correct++;
-      }
-      return { correct, total: questions.length, wrong: questions.length - correct };
-    }
-
-    function renderScore(){
-      if (!state.submitted) {
-        el("scoreText").textContent = "Score: —";
-        el("resultBox").style.display = "none";
-        return;
-      }
-      const { correct, total, wrong } = calcScore();
-      el("scoreText").textContent = `Score: ${correct} / ${total}`;
-      el("resultBox").style.display = "block";
-      el("resultBox").innerHTML = `
-        <div><b>Total:</b> ${total}</div>
-        <div><b>Correct:</b> <span class="ok">${correct}</span></div>
-        <div><b>Wrong:</b> <span class="bad">${wrong}</span></div>
-      `;
-    }
-
-    function renderQuestion(){
-      const q = currentQ();
-      if (!q) {
-        el("qTitle").textContent = "No questions found.";
-        el("options").innerHTML = `<p class="muted">Add questions in <b>questions.js</b>.</p>`;
-        el("prevBtn").disabled = true;
-        el("nextBtn").disabled = true;
-        el("submitBtn").disabled = true;
-        renderProgress();
-        renderScore();
-        return;
-      }
-
-      el("qTitle").textContent = q.text;
-      const picked = state.answers[q.id];
-
-      el("options").innerHTML = q.options.map((opt, i) => {
-        const checked = picked === i ? "checked" : "";
-        const disabled = state.submitted ? "disabled" : "";
-        return `
-          <label class="opt">
-            <input type="radio" name="opt" value="${i}" ${checked} ${disabled}/>
-            <div><b>${String.fromCharCode(65+i)}.</b> ${opt}</div>
-          </label>
-        `;
-      }).join("");
-
-      el("options").querySelectorAll('input[type="radio"]').forEach(r => {
-        r.addEventListener("change", (e) => {
-          const val = Number(e.target.value);
-          state.answers[q.id] = val;
-          save();
-        });
-      });
-
-      el("prevBtn").disabled = state.idx === 0;
-      el("nextBtn").disabled = state.idx >= questions.length - 1;
-      el("submitBtn").disabled = questions.length === 0;
-
-      renderProgress();
-      renderScore();
-    }
-
-    function next(){
-      if (state.idx < questions.length - 1) state.idx++;
-      save(); renderQuestion();
-    }
-    function prev(){
-      if (state.idx > 0) state.idx--;
-      save(); renderQuestion();
-    }
-    function submit(){
-      state.submitted = true;
-      save();
-      el("bar").style.width = "100%";
-      renderQuestion();
-    }
-    function resetAll(){
-      localStorage.removeItem(LS_KEY);
-      state = { order: questions.map(q => q.id), idx: 0, answers: {}, submitted: false };
-      save();
-      renderQuestion();
-    }
-
-    // init
-    load();
-    initOrder();
-    renderMeta();
-    renderQuestion();
-
-    el("nextBtn").addEventListener("click", next);
-    el("prevBtn").addEventListener("click", prev);
-    el("submitBtn").addEventListener("click", submit);
-    el("resetBtn").addEventListener("click", resetAll);
-  </script>
 </body>
 </html>
