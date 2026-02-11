@@ -1,70 +1,53 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Taxi Exam Prep</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Taxi Exam Preparation</title>
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-
-<div class="topbar">
-  <div class="hamburger" onclick="openSidebar()"><span>☰</span></div>
-  <div class="brand">🚕 Taxi Exam Prep</div>
-</div>
-
-<div id="overlay" onclick="closeSidebar()"></div>
-
-<aside id="sidebar">
-  <div class="side-title">MENU</div>
-
-  <a class="side-item" href="index.html" onclick="closeSidebar()">
-    <div class="icon">🏠</div><div>Home</div>
-  </a>
-
-  <a class="side-item" href="practice.html" onclick="closeSidebar()">
-    <div class="icon">📝</div><div>Taxi Exam Practice</div>
-  </a>
-
-  <a class="side-item" href="exam.html" onclick="closeSidebar()">
-    <div class="icon">⏱️</div><div>Real-time Exam (50Q/50min)</div>
-  </a>
-
-  <a class="side-item" href="articles.html" onclick="closeSidebar()">
-    <div class="icon">📚</div><div>Full Sheet (Articles)</div>
-  </a>
-
-  <a class="side-item" href="pdf.html" onclick="closeSidebar()">
-    <div class="icon">📄</div><div>Questions PDF</div>
-  </a>
-</aside>
-
-<main class="page">
-
-  <div class="qbox">
-    <h1 style="margin-top:0;">Taxi Exam Information</h1>
-    <p class="small">
-      এখানে তোমার Taxi Exam প্রস্তুতির সবকিছু থাকবে: Sheet, Vocabulary, Flashcards, Practice Quiz এবং Real Exam.
-    </p>
-
-    <div class="row" style="margin-top:12px;">
-      <a class="btn" href="practice.html">Start Practice</a>
-      <a class="btn secondary" href="exam.html">Start Real Exam</a>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">🚕</div>
+      <div>
+        <div class="brand-title">Taxi Exam Preparation</div>
+        <div class="brand-sub">Study • Practice • Real Exam (50Q/50min)</div>
+      </div>
     </div>
+
+    <div class="top-actions">
+      <input id="globalSearch" class="search" type="search" placeholder="Search (sheet / question)..." />
+      <button id="toggleTheme" class="btn ghost" type="button">🌙</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <nav class="nav">
+        <a class="nav-link" href="#/home" data-route="home">🏠 Home</a>
+        <a class="nav-link" href="#/study" data-route="study">📘 Study Sheets</a>
+        <a class="nav-link" href="#/practice" data-route="practice">📝 Practice Questions</a>
+        <a class="nav-link" href="#/exam" data-route="exam">⏱️ Real Exam</a>
+        <a class="nav-link" href="#/progress" data-route="progress">📈 Progress</a>
+        <a class="nav-link" href="#/resources" data-route="resources">🔗 Resources / FAQ</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="small muted">Works offline-ish (cached by browser).</div>
+        <div class="small muted">Built for GitHub Pages.</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div id="page" class="page"></div>
+    </main>
   </div>
 
-  <div style="height:14px"></div>
+  <footer class="footer">
+    <div class="small muted">© Taxi Exam Prep — Your personal learning site.</div>
+  </footer>
 
-  <div class="qbox">
-    <h2 style="margin-top:0;">📘 Full Sheet</h2>
-    <p class="small">
-      তোমার sheet কে article হিসেবে পড়তে চাইলে “Articles” এ যাও।
-    </p>
-    <a class="btn" href="articles.html">Open Full Sheet</a>
-  </div>
-
-</main>
-
-<script src="assets/js/app.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>
