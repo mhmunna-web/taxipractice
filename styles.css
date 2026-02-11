@@ -1,32 +1,42 @@
 body{
   margin:0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-  color:var(--text);
+  color:#E8ECF3;
+  min-height:100vh;
 
-  /* --- CLEAN BG --- */
+  /* ---- Premium Dark Background ---- */
   background:
 
-    /* Finland tint (very subtle now) */
-    linear-gradient(90deg,
-      rgba(255,255,255,.02) 0%,
-      rgba(255,255,255,.02) 40%,
-      rgba(0,53,128,.05) 40%,
-      rgba(0,53,128,.05) 60%,
-      rgba(255,255,255,.02) 60%,
-      rgba(255,255,255,.02) 100%
+    /* Blue glow top left */
+    radial-gradient(
+      900px 600px at 10% -10%,
+      rgba(77,163,255,.25),
+      transparent 60%
     ),
 
-    /* dark readability layer */
-    linear-gradient(rgba(5,10,20,.88), rgba(5,10,20,.94)),
+    /* Purple glow top right */
+    radial-gradient(
+      900px 600px at 90% 0%,
+      rgba(124,77,255,.22),
+      transparent 55%
+    ),
 
-    /* taxi bg image */
-    url("./assets/bg/taxi.jpg") center / cover no-repeat fixed,
+    /* Bottom road glow */
+    radial-gradient(
+      1000px 400px at 50% 120%,
+      rgba(255,200,90,.12),
+      transparent 70%
+    ),
 
-    /* glow */
-    radial-gradient(900px 600px at 20% -10%, rgba(77,163,255,.12), transparent 60%),
-    radial-gradient(900px 600px at 90% 0%, rgba(124,77,255,.12), transparent 55%),
-    linear-gradient(180deg, #070A12, #0A1020);
+    /* Main dark gradient */
+    linear-gradient(
+      180deg,
+      #070A12 0%,
+      #0A1020 40%,
+      #05070F 100%
+    );
 }
+
 
 
 .main{
@@ -80,4 +90,7 @@ body::after{
 @keyframes rainMove{
   from{ transform: translate3d(0,0,0); }
   to{ transform: translate3d(-300px, 300px, 0); }
+}/* Smooth background movement feel */
+body{
+  background-attachment: fixed;
 }
