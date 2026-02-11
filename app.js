@@ -1,6 +1,6 @@
 const pageEl = document.getElementById("page");
 
-/* ---------------- DATA LOAD ---------------- */
+/* ---------------- LOAD QUESTIONS ---------------- */
 
 let questions = [];
 
@@ -46,7 +46,6 @@ function renderStudy(){
 /* ---------------- PRACTICE ---------------- */
 
 let pIndex = 0;
-let selected = null;
 
 function renderPractice(){
 
@@ -65,7 +64,7 @@ function renderPractice(){
   `).join("");
 
   pageEl.innerHTML = `
-    <h1 class="h1">📝 Practice</h1>
+    <h1 class="h1">📝 Practice Questions</h1>
 
     <div class="qbox">
       <div><b>${q.question_fi}</b></div>
@@ -116,7 +115,7 @@ function nextPractice(){
 
 function renderExam(){
   pageEl.innerHTML = `
-    <h1 class="h1">⏱️ Real Exam</h1>
+    <h1 class="h1">⏱️ Real Time Exam</h1>
     <p class="lead">50 Questions • 50 Minutes</p>
 
     <button onclick="startExam()">Start Exam</button>
@@ -126,7 +125,7 @@ function renderExam(){
 function startExam(){
   pageEl.innerHTML = `
     <h2>Exam Started</h2>
-    <p>Timer & real system next step e add korbo.</p>
+    <p>Real exam timer & result system next step e add korbo.</p>
   `;
 }
 
@@ -143,7 +142,7 @@ function renderProgress(){
 
 function renderResources(){
   pageEl.innerHTML = `
-    <h1 class="h1">🔗 Resources</h1>
+    <h1 class="h1">🔗 Resources / FAQ</h1>
     <p class="lead">Links will be added.</p>
   `;
 }
@@ -167,4 +166,3 @@ window.addEventListener("hashchange", router);
 /* ---------------- INIT ---------------- */
 
 loadQuestions().then(router);
-
