@@ -1,52 +1,115 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
   <title>Taxi Exam Preparation</title>
-  <link rel="stylesheet" href="./styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">🚕</div>
-      <div>
-        <div class="brand-title">Taxi Exam Preparation</div>
-        <div class="brand-sub">Study • Practice • Real Exam (50Q/50min)</div>
+
+<!-- ========== APP WRAPPER ========== -->
+<div class="app">
+
+  <!-- ========== SIDEBAR ========== -->
+  <aside class="sidebar">
+
+    <h2>🚕 Taxi Exam</h2>
+
+    <nav class="navlist">
+
+      <a href="#" class="navitem active" data-page="home">
+        <span class="navicon">🏠</span> Home
+      </a>
+
+      <a href="#" class="navitem" data-page="study">
+        <span class="navicon">📘</span> Study Sheets
+      </a>
+
+      <a href="#" class="navitem" data-page="practice">
+        <span class="navicon">📝</span> Practice Questions
+      </a>
+
+      <a href="#" class="navitem" data-page="exam">
+        <span class="navicon">⏱️</span> Real Time Exam
+      </a>
+
+      <a href="#" class="navitem" data-page="progress">
+        <span class="navicon">📊</span> Progress
+      </a>
+
+      <a href="#" class="navitem" data-page="faq">
+        <span class="navicon">🔗</span> Resources / FAQ
+      </a>
+
+    </nav>
+
+  </aside>
+
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main class="content">
+
+    <!-- HOME -->
+    <section id="home" class="page active">
+      <h1>Welcome 👋</h1>
+      <p>Study sheets + practice + real exam.</p>
+    </section>
+
+
+    <!-- STUDY -->
+    <section id="study" class="page">
+      <h1>📘 Study Sheets</h1>
+
+      <div class="sheet-controls">
+        <button onclick="prevPage()">⬅ Prev</button>
+        <button onclick="nextPage()">Next ➡</button>
       </div>
-    </div>
 
-    <div class="top-actions">
-      <input id="globalSearch" class="search" type="search" placeholder="Search (sheet / question)..." />
-      <button id="toggleTheme" class="btn ghost" type="button">🌙</button>
-    </div>
-  </header>
-
-  <div class="layout">
-    <aside class="sidebar">
-      <nav class="nav">
-        <a class="nav-link" href="#/home" data-route="home">🏠 Home</a>
-        <a class="nav-link" href="#/study" data-route="study">📘 Study Sheets</a>
-        <a class="nav-link" href="#/practice" data-route="practice">📝 Practice Questions</a>
-        <a class="nav-link" href="#/exam" data-route="exam">⏱️ Real Time Exam</a>
-        <a class="nav-link" href="#/progress" data-route="progress">📈 Progress</a>
-        <a class="nav-link" href="#/resources" data-route="resources">🔗 Resources / FAQ</a>
-      </nav>
-
-      <div class="sidebar-footer">
-        <div class="small muted">Built for GitHub Pages.</div>
+      <div class="sheet-viewer">
+        <img id="sheetImage" src="" alt="Sheet">
       </div>
-    </aside>
+    </section>
 
-    <main class="main">
-      <div id="page" class="page"></div>
-    </main>
-  </div>
 
-  <footer class="footer">
-    <div class="small muted">© Mhmunna-web</div>
-  </footer>
+    <!-- PRACTICE -->
+    <section id="practice" class="page">
+      <h1>📝 Practice Questions</h1>
+      <p>Questions will appear here.</p>
+    </section>
 
-  <script src="./app.js" defer></script>
+
+    <!-- EXAM -->
+    <section id="exam" class="page">
+      <h1>⏱️ Real Time Exam</h1>
+      <p>50 Questions / 50 Minutes</p>
+    </section>
+
+
+    <!-- PROGRESS -->
+    <section id="progress" class="page">
+      <h1>📊 Progress</h1>
+      <p>Coming soon.</p>
+    </section>
+
+
+    <!-- FAQ -->
+    <section id="faq" class="page">
+      <h1>🔗 Resources / FAQ</h1>
+      <p>Useful links & info.</p>
+    </section>
+
+  </main>
+
+</div>
+
+
+
+<!-- ========== JAVASCRIPT ========== -->
+<script src="app.js"></script>
+
 </body>
 </html>
