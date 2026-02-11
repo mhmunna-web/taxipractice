@@ -1,8 +1,9 @@
 const pageEl = document.getElementById("page");
 
-/* ---------------- LOAD QUESTIONS ---------------- */
-
 let questions = [];
+let sheets = [];
+
+/* ---------------- LOAD DATA ---------------- */
 
 async function loadQuestions(){
   try{
@@ -11,6 +12,16 @@ async function loadQuestions(){
     questions = data.questions || [];
   }catch{
     questions = [];
+  }
+}
+
+async function loadSheets(){
+  try{
+    const res = await fetch("./data/sheets.json");
+    sheets = await res.json(); // expecting array
+    if(!Array.isArray(sheets)) sheets = [];
+  }catch{
+    sheets = [];
   }
 }
 
@@ -23,25 +34,45 @@ function renderHome(){
       Finland Taxi Exam preparation platform.<br>
       Study sheets, practice questions & real exam simulation.
     </p>
-
-    <div class="alert">
-      <div style="font-weight:800">🚕 Ready to Start</div>
-      <div class="hr"></div>
-      <div class="muted small">
-        Use the sidebar menu to begin your preparation.
-      </div>
-    </div>
   `;
 }
 
-/* ---------------- STUDY ---------------- */
+/* ---------------- STUDY (SHOW PNG SHEETS) ---------------- */
 
 function renderStudy(){
+  if(!sheets.length){
+    pageEl.innerHTML = `
+      <h1 class="h1">📘 Study Sheets</h1>
+      <p class="lead">No sheets found. Add images in assets/sheets and list them in data/sheets.json</p>
+    `;
+    return;
+  }
+
+  const cards = sheets.map((s, i) => {
+    const imgPath = s.image || "";
+    const safeSrc = encodeURI("./" + imgPath); // handles spaces
+    const safeLink = encodeURI("./" + imgPath);
+
+    return `
+      <div class="qbox">
+        <div class="row-gap" style="justify-content:space-between;">
+          <b>${i+1}) ${s.title || "Sheet"}</b>
+          <a class="btn" href="${safeLink}" target="_blank">Open</a>
+        </div>
+        <div class="hr"></div>
+        <img
+          src="${safeSrc}"
+          alt="${(s.title || "Sheet")}"
+          style="width:100%; border-radius:12px; border:1px solid var(--line);"
+        />
+      </div>
+    `;
+  }).join("");
+
   pageEl.innerHTML = `
     <h1 class="h1">📘 Study Sheets</h1>
-    <p class="lead"> will be added here
-
-.</p>
+    <p class="lead">Tap Open to view full image.</p>
+    ${cards}
   `;
 }
 
@@ -50,18 +81,20 @@ function renderStudy(){
 let pIndex = 0;
 
 function renderPractice(){
-
   if(!questions.length){
-    pageEl.innerHTML = `<h1>No Questions Found</h1>`;
+    pageEl.innerHTML = `<h1 class="h1">📝 Practice Questions</h1><p class="lead">No questions found.</p>`;
     return;
   }
 
   const q = questions[pIndex];
 
-  const opts = q.options.map(o=>`
+  const opts = (q.options || []).map(o=>`
     <label class="option">
       <input type="radio" name="opt" value="${o.id}">
-      ${o.fi}
+      <div>
+        <div style="font-weight:700">${o.fi || ""}</div>
+        <div class="muted small">${o.bn || ""}</div>
+      </div>
     </label>
   `).join("");
 
@@ -69,21 +102,22 @@ function renderPractice(){
     <h1 class="h1">📝 Practice Questions</h1>
 
     <div class="qbox">
-      <div><b>${q.question_fi}</b></div>
+      <div><b>${q.question_fi || ""}</b></div>
+      <div class="muted">${q.question_bn || ""}</div>
 
       ${opts}
 
-      <br>
-      <button onclick="submitPractice()">Submit</button>
-      <button onclick="nextPractice()">Next</button>
+      <div class="row-gap" style="margin-top:12px;">
+        <button class="btn primary" onclick="submitPractice()">Submit</button>
+        <button class="btn" onclick="nextPractice()">Next</button>
+      </div>
 
-      <div id="result"></div>
+      <div id="result" style="margin-top:10px;"></div>
     </div>
   `;
 }
 
-function submitPractice(){
-
+window.submitPractice = function(){
   const q = questions[pIndex];
   const val = document.querySelector("input[name=opt]:checked");
 
@@ -93,25 +127,22 @@ function submitPractice(){
   }
 
   if(!q.answer){
-    document.getElementById("result").innerHTML =
-      "ℹ️ Answer not set yet";
+    document.getElementById("result").innerHTML = `<div class="alert">ℹ️ Answer not set yet</div>`;
     return;
   }
 
   if(val.value === q.answer){
-    document.getElementById("result").innerHTML =
-      "✅ Correct";
+    document.getElementById("result").innerHTML = `<div class="alert">✅ Correct</div>`;
   }else{
-    document.getElementById("result").innerHTML =
-      "❌ Wrong";
+    document.getElementById("result").innerHTML = `<div class="alert">❌ Wrong</div>`;
   }
-}
+};
 
-function nextPractice(){
+window.nextPractice = function(){
   pIndex++;
   if(pIndex >= questions.length) pIndex = 0;
   renderPractice();
-}
+};
 
 /* ---------------- REAL EXAM ---------------- */
 
@@ -119,15 +150,7 @@ function renderExam(){
   pageEl.innerHTML = `
     <h1 class="h1">⏱️ Real Time Exam</h1>
     <p class="lead">50 Questions • 50 Minutes</p>
-
-    <button onclick="startExam()">Start Exam</button>
-  `;
-}
-
-function startExam(){
-  pageEl.innerHTML = `
-    <h2>Exam Started</h2>
-    <p>Real exam timer & result system next step e add korbo.</p>
+    <div class="alert">Exam timer system next step e add korbo.</div>
   `;
 }
 
@@ -152,7 +175,6 @@ function renderResources(){
 /* ---------------- ROUTER ---------------- */
 
 function router(){
-
   const hash = location.hash || "#/home";
 
   if(hash === "#/study") renderStudy();
@@ -167,4 +189,4 @@ window.addEventListener("hashchange", router);
 
 /* ---------------- INIT ---------------- */
 
-loadQuestions().then(router);
+Promise.all([loadQuestions(), loadSheets()]).then(router);
