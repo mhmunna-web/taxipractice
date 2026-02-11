@@ -1,24 +1,27 @@
 {
-  "topics": [
-    "Traffic safety",
-    "Customer service",
-    "Permits & rules"
-  ],
-  "questions": [
+  "id": "q101",
+  "topic": "Traffic safety",
+  "type": "mcq",
+  "question_fi": "Taksin kyytiin tulee hyvin erilaisia ja eri-ikäisiä asiakkaita. Silloin tällöin kyytiin on tulossa myös lapsia. Mitä sinun on hyvä muistaa lapsista taksissa?",
+  "question_bn": "ট্যাক্সিতে বিভিন্ন বয়সের যাত্রী আসে। মাঝে মাঝে শিশু যাত্রীও থাকে। ট্যাক্সিতে শিশুদের ব্যাপারে কোন বিষয়টি মনে রাখা জরুরি?",
+  "options": [
     {
-      "id": "q1",
-      "topic": "Traffic safety",
-      "type": "mcq",
-      "question_fi": "Alkoholia ei tule nauttia ennen ajovuoroa, koska...",
-      "question_bn": "ডিউটির আগে অ্যালকোহল খাওয়া উচিত নয়, কারণ...",
-      "options": [
-        { "id": "a", "fi": "Se parantaa keskittymistä", "bn": "এটা মনোযোগ বাড়ায়" },
-        { "id": "b", "fi": "Se aiheuttaa väsymystä ja heikentää ajokykyä", "bn": "এটা ক্লান্তি আনে ও ড্রাইভিং ক্ষমতা কমায়" },
-        { "id": "c", "fi": "Se tekee ajamisesta nopeampaa", "bn": "ড্রাইভিং দ্রুত করে" }
-      ],
-      "answer": "b",
-      "explain_bn": "অ্যালকোহল খেলে ক্লান্তি ও রিঅ্যাকশন টাইম খারাপ হয়, তাই ডিউটির আগে নিষেধ।",
-      "explain_fi": "Alkoholi heikentää ajokykyä ja lisää väsymystä."
+      "id": "a",
+      "fi": "Alle 135 senttimetriä pitkää lasta saadaan kuljettaa turvavyötä käyttäen muulla kuin etuistuimella, mikäli turvalaitetta ei ole saatavilla.",
+      "bn": "শিশুর উচ্চতা ১৩৫ সেমি’র কম হলে, যদি চাইল্ড সিট/বুস্টার (turvalaite) না থাকে, তাহলে সামনের সিট ছাড়া অন্য সিটে (পেছনে) সিটবেল্ট ব্যবহার করে বহন করা যায়।"
+    },
+    {
+      "id": "b",
+      "fi": "Alle 3-vuotias lapsi ei saa matkustaa taksissa ilman huoltajansa kirjallista suostumusta.",
+      "bn": "৩ বছরের কম শিশু অভিভাবকের লিখিত অনুমতি ছাড়া ট্যাক্সিতে উঠতে পারে না।"
+    },
+    {
+      "id": "c",
+      "fi": "Lapsi voi matkustaa taksissa ilman turvalaitetta, kunhan hän istuu etupenkillä ja on vöissä.",
+      "bn": "শিশু চাইল্ড সিট ছাড়া ট্যাক্সিতে যেতে পারে, যদি সামনের সিটে বসে এবং সিটবেল্ট পরে।"
     }
-  ]
+  ],
+  "answer": "a",
+  "explain_fi": "Taksissa on poikkeus: jos turvalaitetta ei ole saatavilla, vähintään 3-vuotias mutta alle 135 cm pitkä lapsi voidaan kuljettaa turvavyöllä takaistuimella (ei etuistuimella). Alle 3-vuotiaalla turvalaite on aina oltava.",
+  "explain_bn": "ট্যাক্সিতে ব্যতিক্রম আছে: যদি চাইল্ড সিট/বুস্টার না থাকে, তাহলে ৩ বছর বা তার বেশি বয়সী কিন্তু ১৩৫ সেমি’র কম শিশুকে পেছনের সিটে সিটবেল্ট দিয়ে নেওয়া যায় (সামনের সিটে নয়)। তবে ৩ বছরের কম হলে ট্যাক্সিতেও সবসময় turvalaite লাগবে।"
 }
