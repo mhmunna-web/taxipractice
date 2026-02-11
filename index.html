@@ -6,35 +6,32 @@
   <title>Taxi Exam Preparation</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
+
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <div class="logo">🚕</div>
-      <div>
-        <div class="brand-title">Taxi Exam Preparation</div>
-        <div class="brand-sub">Study • Practice • Real Time Exam</div>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">🚕</div>
+    <div>
+      <div class="brand-title">Taxi Exam Preparation</div>
+      <div class="brand-sub">
+        Study • Practice • Real Time Exam
       </div>
     </div>
-
-    <div class="top-actions">
-      <input id="globalSearch" class="search" type="search" placeholder="Search (sheet / question)..." />
-      <button id="toggleTheme" class="btn ghost" type="button">🌙</button>
-    </div>
-  </header>
-
-  <div class="layout">
-    <aside class="sidebar">
-      <nav class="nav" id="navLinks">
-        <!-- JS will render 4 menu items here -->
-      </nav>
-    </aside>
-
-    <main class="main">
-      <div id="page" class="page"></div>
-    </main>
   </div>
+</header>
 
-  <script src="./app.js" defer></script>
+<nav class="menu">
+  <a href="#/home">🏠 Home</a>
+  <a href="#/study">📘 Study Sheets</a>
+  <a href="#/practice">📝 Practice Questions</a>
+  <a href="#/exam">⏱️ Real Time Exam</a>
+</nav>
+
+<main class="main">
+  <div id="page"></div>
+</main>
+
+<script src="./app.js"></script>
 </body>
 </html>
-
