@@ -1,14 +1,20 @@
 {
-  "questions":[
+  "topics": ["Traffic safety"],
+  "questions": [
     {
-      "id":"q1",
-      "question_fi":"Taksin kyytiin tulee myös lapsia. Mitä muistaa?",
-      "options":[
-        {"id":"a","fi":"Alle 135 cm lapsi takapenkillä vyöllä"},
-        {"id":"b","fi":"Alle 3v ilman lupaa ei saa"},
-        {"id":"c","fi":"Etupenkillä ilman turvalaitetta"}
+      "id": "q101",
+      "topic": "Traffic safety",
+      "type": "mcq",
+      "question_fi": "Taksin kyytiin tulee hyvin erilaisia ja eri-ikäisiä asiakkaita. Silloin tällöin kyytiin on tulossa myös lapsia. Mitä sinun on hyvä muistaa lapsista taksissa?",
+      "question_bn": "ট্যাক্সিতে শিশু যাত্রীও থাকতে পারে। শিশুদের ক্ষেত্রে কী মনে রাখা জরুরি?",
+      "options": [
+        { "id": "a", "fi": "Alle 135 cm lasta voidaan kuljettaa turvavyöllä takaistuimella, jos turvalaitetta ei ole.", "bn": "" },
+        { "id": "b", "fi": "Alle 3-vuotias ei saa matkustaa ilman kirjallista suostumusta.", "bn": "" },
+        { "id": "c", "fi": "Lapsi voi matkustaa ilman turvalaitetta etupenkillä.", "bn": "" }
       ],
-      "answer":"a"
+      "answer": null,
+      "explain_fi": "",
+      "explain_bn": ""
     }
   ]
 }
