@@ -1,12 +1,10 @@
 const pageEl = document.getElementById("page");
 
 /* ---------------- DATA ---------------- */
-
 let questions = [];
 let sheets = [];
 
 /* ---------------- LOAD ---------------- */
-
 async function loadQuestions(){
   try{
     const res = await fetch("./data/questions.json");
@@ -27,8 +25,12 @@ async function loadSheets(){
   }
 }
 
-/* ---------------- HOME ---------------- */
+/* ---------------- HELPERS ---------------- */
+function getHash(){
+  return location.hash || "#/home";
+}
 
+/* ---------------- PAGES ---------------- */
 function renderHome(){
   pageEl.innerHTML = `
     <h1 class="h1">Welcome 👋</h1>
@@ -39,8 +41,7 @@ function renderHome(){
   `;
 }
 
-/* ---------------- STUDY SHEETS (PNG SHOW) ---------------- */
-
+/* ✅ NO AUTO CHANGE: Static render */
 function renderStudy(){
   if(!sheets.length){
     pageEl.innerHTML = `
@@ -52,15 +53,16 @@ function renderStudy(){
 
   const cards = sheets.map((s, i) => {
     const img = s.image || "";
+    const src = "./" + encodeURI(img);
     return `
       <div class="qbox">
         <div class="row-gap" style="justify-content:space-between;">
           <b>${i+1}) ${s.title || "Sheet"}</b>
-          <a class="btn" href="./${encodeURI(img)}" target="_blank">Open Full</a>
+          <a class="btn" href="${src}" target="_blank">Open Full</a>
         </div>
         <div class="hr"></div>
         <img
-          src="./${encodeURI(img)}"
+          src="${src}"
           alt="${s.title || "Sheet"}"
           style="width:100%; border-radius:12px; border:1px solid var(--line);"
         />
@@ -76,7 +78,6 @@ function renderStudy(){
 }
 
 /* ---------------- PRACTICE ---------------- */
-
 let pIndex = 0;
 
 function renderPractice(){
@@ -109,16 +110,20 @@ function renderPractice(){
       ${opts}
 
       <div class="row-gap" style="margin-top:12px;">
-        <button class="btn primary" onclick="submitPractice()">Submit</button>
-        <button class="btn" onclick="nextPractice()">Next</button>
+        <button class="btn primary" id="btnSubmit">Submit</button>
+        <button class="btn" id="btnNext">Next</button>
       </div>
 
       <div id="result" style="margin-top:10px;"></div>
     </div>
   `;
+
+  // ✅ attach handlers once per render (NO duplicate global listeners)
+  document.getElementById("btnSubmit").onclick = submitPractice;
+  document.getElementById("btnNext").onclick = nextPractice;
 }
 
-window.submitPractice = function(){
+function submitPractice(){
   const q = questions[pIndex];
   const val = document.querySelector("input[name=opt]:checked");
 
@@ -128,25 +133,27 @@ window.submitPractice = function(){
   }
 
   if(!q.answer){
-    document.getElementById("result").innerHTML = `<div class="alert">ℹ️ Answer not set yet</div>`;
+    document.getElementById("result").innerHTML =
+      `<div class="alert">ℹ️ Answer not set yet</div>`;
     return;
   }
 
   if(val.value === q.answer){
-    document.getElementById("result").innerHTML = `<div class="alert">✅ Correct</div>`;
+    document.getElementById("result").innerHTML =
+      `<div class="alert">✅ Correct</div>`;
   }else{
-    document.getElementById("result").innerHTML = `<div class="alert">❌ Wrong</div>`;
+    document.getElementById("result").innerHTML =
+      `<div class="alert">❌ Wrong</div>`;
   }
-};
+}
 
-window.nextPractice = function(){
+function nextPractice(){
   pIndex++;
   if(pIndex >= questions.length) pIndex = 0;
   renderPractice();
-};
+}
 
 /* ---------------- REAL EXAM ---------------- */
-
 function renderExam(){
   pageEl.innerHTML = `
     <h1 class="h1">⏱️ Real Time Exam</h1>
@@ -155,16 +162,13 @@ function renderExam(){
   `;
 }
 
-/* ---------------- PROGRESS ---------------- */
-
+/* ---------------- OTHERS ---------------- */
 function renderProgress(){
   pageEl.innerHTML = `
     <h1 class="h1">📈 Progress</h1>
     <p class="lead">Coming soon.</p>
   `;
 }
-
-/* ---------------- RESOURCES ---------------- */
 
 function renderResources(){
   pageEl.innerHTML = `
@@ -173,10 +177,9 @@ function renderResources(){
   `;
 }
 
-/* ---------------- ROUTER ---------------- */
-
+/* ---------------- ROUTER (NO AUTO LOOP) ---------------- */
 function router(){
-  const hash = location.hash || "#/home";
+  const hash = getHash();
 
   if(hash === "#/home") renderHome();
   else if(hash === "#/study") renderStudy();
@@ -189,7 +192,9 @@ function router(){
 
 window.addEventListener("hashchange", router);
 
-/* ---------------- INIT ---------------- */
-
-Promise.all([loadQuestions(), loadSheets()]).then(router);
+/* ---------------- INIT (RUN ONCE) ---------------- */
+(async function init(){
+  await Promise.all([loadQuestions(), loadSheets()]);
+  router();
+})();
 
