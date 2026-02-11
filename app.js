@@ -1,9 +1,11 @@
 const pageEl = document.getElementById("page");
 
+/* ---------------- DATA ---------------- */
+
 let questions = [];
 let sheets = [];
 
-/* ---------------- LOAD DATA ---------------- */
+/* ---------------- LOAD ---------------- */
 
 async function loadQuestions(){
   try{
@@ -18,8 +20,8 @@ async function loadQuestions(){
 async function loadSheets(){
   try{
     const res = await fetch("./data/sheets.json");
-    sheets = await res.json(); // expecting array
-    if(!Array.isArray(sheets)) sheets = [];
+    const data = await res.json();
+    sheets = Array.isArray(data) ? data : [];
   }catch{
     sheets = [];
   }
@@ -37,32 +39,29 @@ function renderHome(){
   `;
 }
 
-/* ---------------- STUDY (SHOW PNG SHEETS) ---------------- */
+/* ---------------- STUDY SHEETS (PNG SHOW) ---------------- */
 
 function renderStudy(){
   if(!sheets.length){
     pageEl.innerHTML = `
       <h1 class="h1">📘 Study Sheets</h1>
-      <p class="lead">No sheets found. Add images in assets/sheets and list them in data/sheets.json</p>
+      <p class="lead">No sheets found. Add list in <b>data/sheets.json</b>.</p>
     `;
     return;
   }
 
   const cards = sheets.map((s, i) => {
-    const imgPath = s.image || "";
-    const safeSrc = encodeURI("./" + imgPath); // handles spaces
-    const safeLink = encodeURI("./" + imgPath);
-
+    const img = s.image || "";
     return `
       <div class="qbox">
         <div class="row-gap" style="justify-content:space-between;">
           <b>${i+1}) ${s.title || "Sheet"}</b>
-          <a class="btn" href="${safeLink}" target="_blank">Open</a>
+          <a class="btn" href="./${encodeURI(img)}" target="_blank">Open Full</a>
         </div>
         <div class="hr"></div>
         <img
-          src="${safeSrc}"
-          alt="${(s.title || "Sheet")}"
+          src="./${encodeURI(img)}"
+          alt="${s.title || "Sheet"}"
           style="width:100%; border-radius:12px; border:1px solid var(--line);"
         />
       </div>
@@ -71,7 +70,7 @@ function renderStudy(){
 
   pageEl.innerHTML = `
     <h1 class="h1">📘 Study Sheets</h1>
-    <p class="lead">Tap Open to view full image.</p>
+    <p class="lead">Tap <b>Open Full</b> for full screen.</p>
     ${cards}
   `;
 }
@@ -82,12 +81,14 @@ let pIndex = 0;
 
 function renderPractice(){
   if(!questions.length){
-    pageEl.innerHTML = `<h1 class="h1">📝 Practice Questions</h1><p class="lead">No questions found.</p>`;
+    pageEl.innerHTML = `
+      <h1 class="h1">📝 Practice Questions</h1>
+      <p class="lead">No questions found yet.</p>
+    `;
     return;
   }
 
   const q = questions[pIndex];
-
   const opts = (q.options || []).map(o=>`
     <label class="option">
       <input type="radio" name="opt" value="${o.id}">
@@ -150,7 +151,7 @@ function renderExam(){
   pageEl.innerHTML = `
     <h1 class="h1">⏱️ Real Time Exam</h1>
     <p class="lead">50 Questions • 50 Minutes</p>
-    <div class="alert">Exam timer system next step e add korbo.</div>
+    <div class="alert">Real exam timer system next step e add korbo.</div>
   `;
 }
 
@@ -177,7 +178,8 @@ function renderResources(){
 function router(){
   const hash = location.hash || "#/home";
 
-  if(hash === "#/study") renderStudy();
+  if(hash === "#/home") renderHome();
+  else if(hash === "#/study") renderStudy();
   else if(hash === "#/practice") renderPractice();
   else if(hash === "#/exam") renderExam();
   else if(hash === "#/progress") renderProgress();
@@ -190,3 +192,4 @@ window.addEventListener("hashchange", router);
 /* ---------------- INIT ---------------- */
 
 Promise.all([loadQuestions(), loadSheets()]).then(router);
+
