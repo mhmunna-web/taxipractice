@@ -1,7 +1,46 @@
 const pageEl = document.getElementById("page");
+const navLinksEl = document.getElementById("navLinks");
 
 let questions = [];
 let sheets = [];
+
+/* ---------------- NAV (Dynamic Menu) ---------------- */
+
+const NAV_ITEMS = [
+  { hash:"#/home",     label:"Home",            icon:"🏠" },
+  { hash:"#/study",    label:"Study Sheets",    icon:"📘" },
+  { hash:"#/practice", label:"Practice Questions", icon:"📝" },
+  { hash:"#/exam",     label:"Real Time Exam",  icon:"⏱️" },
+  { hash:"#/progress", label:"Progress",        icon:"📈" },
+  { hash:"#/resources",label:"Resources / FAQ", icon:"🔗" }
+];
+
+function renderNav(currentHash){
+  if(!navLinksEl) return;
+
+  // Home page => show all
+  const showAll = (currentHash === "#/home" || !currentHash);
+
+  let itemsToShow = [];
+  if(showAll){
+    itemsToShow = NAV_ITEMS;
+  }else{
+    const currentItem = NAV_ITEMS.find(x => x.hash === currentHash);
+    const homeItem = NAV_ITEMS.find(x => x.hash === "#/home");
+    itemsToShow = [homeItem, currentItem].filter(Boolean);
+  }
+
+  navLinksEl.innerHTML = `
+    <div class="navlist">
+      ${itemsToShow.map(it => `
+        <a class="navitem ${it.hash === currentHash ? "active":""}" href="${it.hash}">
+          <span class="navicon">${it.icon}</span>
+          <span>${it.label}</span>
+        </a>
+      `).join("")}
+    </div>
+  `;
+}
 
 /* ---------------- LOAD ---------------- */
 
@@ -30,13 +69,11 @@ async function loadSheets(){
 function renderHome(){
   pageEl.innerHTML = `
     <h1 class="h1">Welcome 👋</h1>
-    <p class="lead">
-      Study sheets, practice questions & real exam.
-    </p>
+    <p class="lead">Study sheets, practice questions & real exam.</p>
   `;
 }
 
-/* ---------------- STUDY VIEWER (Next/Prev/Zoom + Dropdown) ---------------- */
+/* ---------------- STUDY VIEWER ---------------- */
 
 let sheetIndex = 0;
 let zoom = 1;
@@ -70,7 +107,6 @@ function applyZoom(){
 }
 
 function buildPageOptions(){
-  // 1..N
   return sheets.map((_, i) => {
     const n = i + 1;
     const sel = i === sheetIndex ? "selected" : "";
@@ -103,9 +139,7 @@ function renderStudy(){
         </div>
 
         <div class="row-gap">
-          <select class="select" id="pageJump" aria-label="Jump to page">
-            ${buildPageOptions()}
-          </select>
+          <select class="select" id="pageJump">${buildPageOptions()}</select>
           <a class="btn" href="${src}" target="_blank">Open Full</a>
         </div>
       </div>
@@ -127,14 +161,8 @@ function renderStudy(){
       <div class="hr"></div>
 
       <div id="imgWrap" style="overflow:auto; max-height:70vh; border-radius:12px;">
-        <img id="sheetImg"
-             src="${src}"
-             alt="sheet"
+        <img id="sheetImg" src="${src}" alt="sheet"
              style="display:block; width:100%; border-radius:12px; border:1px solid var(--line);" />
-      </div>
-
-      <div class="muted small" style="margin-top:10px;">
-        Tips: Laptop keyboard → <b>←</b> Prev, <b>→</b> Next, <b>+</b> zoom in, <b>-</b> zoom out, <b>F</b> fit.
       </div>
     </div>
   `;
@@ -142,23 +170,9 @@ function renderStudy(){
   document.getElementById("btnPrev").onclick = () => goPrev();
   document.getElementById("btnNext").onclick = () => goNext();
 
-  document.getElementById("btnFit").onclick = () => {
-    fitMode = true;
-    zoom = 1;
-    applyZoom();
-  };
-
-  document.getElementById("btnZoomIn").onclick = () => {
-    fitMode = false;
-    zoom = clamp(zoom + 0.1, 1, 3);
-    applyZoom();
-  };
-
-  document.getElementById("btnZoomOut").onclick = () => {
-    fitMode = false;
-    zoom = clamp(zoom - 0.1, 1, 3);
-    applyZoom();
-  };
+  document.getElementById("btnFit").onclick = () => { fitMode = true; zoom = 1; applyZoom(); };
+  document.getElementById("btnZoomIn").onclick = () => { fitMode = false; zoom = clamp(zoom + 0.1, 1, 3); applyZoom(); };
+  document.getElementById("btnZoomOut").onclick = () => { fitMode = false; zoom = clamp(zoom - 0.1, 1, 3); applyZoom(); };
 
   document.getElementById("pageJump").onchange = (e) => {
     sheetIndex = Number(e.target.value);
@@ -167,17 +181,6 @@ function renderStudy(){
 
   const img = document.getElementById("sheetImg");
   img.onload = () => applyZoom();
-
-  // keyboard support (single handler)
-  window.onkeydown = (e) => {
-    if((location.hash || "#/home") !== "#/study") return;
-
-    if(e.key === "ArrowRight") goNext();
-    if(e.key === "ArrowLeft") goPrev();
-    if(e.key === "+" || e.key === "=") { fitMode = false; zoom = clamp(zoom + 0.1, 1, 3); applyZoom(); }
-    if(e.key === "-" || e.key === "_") { fitMode = false; zoom = clamp(zoom - 0.1, 1, 3); applyZoom(); }
-    if(e.key.toLowerCase() === "f") { fitMode = true; zoom = 1; applyZoom(); }
-  };
 }
 
 function updateStudyUI(resetScroll){
@@ -197,24 +200,18 @@ function updateStudyUI(resetScroll){
   pageNum.textContent = String(sheetIndex + 1);
   pageTotal.textContent = String(sheets.length);
 
-  // update dropdown selected
   jump.innerHTML = buildPageOptions();
-
-  // reset scroll top when changing page
   if(resetScroll && wrap) wrap.scrollTop = 0;
 
   img.src = src;
 }
 
 function goNext(){
-  sheetIndex++;
-  if(sheetIndex >= sheets.length) sheetIndex = 0;
+  sheetIndex = (sheetIndex + 1) % sheets.length;
   updateStudyUI(true);
 }
-
 function goPrev(){
-  sheetIndex--;
-  if(sheetIndex < 0) sheetIndex = sheets.length - 1;
+  sheetIndex = (sheetIndex - 1 + sheets.length) % sheets.length;
   updateStudyUI(true);
 }
 
@@ -273,8 +270,7 @@ function submitPractice(){
   }
 
   if(!q.answer){
-    document.getElementById("result").innerHTML =
-      `<div class="alert">ℹ️ Answer not set yet</div>`;
+    document.getElementById("result").innerHTML = `<div class="alert">ℹ️ Answer not set yet</div>`;
     return;
   }
 
@@ -285,12 +281,11 @@ function submitPractice(){
 }
 
 function nextPractice(){
-  pIndex++;
-  if(pIndex >= questions.length) pIndex = 0;
+  pIndex = (pIndex + 1) % questions.length;
   renderPractice();
 }
 
-/* ---------------- REAL EXAM ---------------- */
+/* ---------------- OTHER PAGES ---------------- */
 
 function renderExam(){
   pageEl.innerHTML = `
@@ -301,23 +296,20 @@ function renderExam(){
 }
 
 function renderProgress(){
-  pageEl.innerHTML = `
-    <h1 class="h1">📈 Progress</h1>
-    <p class="lead">Coming soon.</p>
-  `;
+  pageEl.innerHTML = `<h1 class="h1">📈 Progress</h1><p class="lead">Coming soon.</p>`;
 }
 
 function renderResources(){
-  pageEl.innerHTML = `
-    <h1 class="h1">🔗 Resources / FAQ</h1>
-    <p class="lead">Links will be added.</p>
-  `;
+  pageEl.innerHTML = `<h1 class="h1">🔗 Resources / FAQ</h1><p class="lead">Links will be added.</p>`;
 }
 
 /* ---------------- ROUTER ---------------- */
 
 function router(){
   const hash = location.hash || "#/home";
+
+  // ✅ render menu based on current page
+  renderNav(hash);
 
   if(hash === "#/home") renderHome();
   else if(hash === "#/study") renderStudy();
@@ -336,4 +328,3 @@ window.addEventListener("hashchange", router);
   await Promise.all([loadQuestions(), loadSheets()]);
   router();
 })();
-
