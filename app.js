@@ -1,68 +1,143 @@
 const pageEl = document.getElementById("page");
-const navLinksEl = document.getElementById("navLinks");
 
-/* --------- ONLY 4 MENU ITEMS ---------- */
-const NAV_ITEMS = [
-  { hash:"#/home",     label:"Home",             icon:"🏠" },
-  { hash:"#/study",    label:"Study Sheets",     icon:"📘" },
-  { hash:"#/practice", label:"Practice Questions", icon:"📝" },
-  { hash:"#/exam",     label:"Real Time Exam",   icon:"⏱️" }
-];
+let sheets = [];
+let questions = [];
 
-function renderNav(currentHash){
-  navLinksEl.innerHTML = NAV_ITEMS.map(it => `
-    <a class="nav-link ${it.hash === currentHash ? "active" : ""}" href="${it.hash}">
-      <span class="nav-icon">${it.icon}</span>
-      <span>${it.label}</span>
-    </a>
-  `).join("");
+/* ---------------- LOAD DATA ---------------- */
+
+async function loadSheets(){
+  const res = await fetch("./data/sheets.json");
+  sheets = await res.json();
 }
 
-/* --------- PAGES ---------- */
+async function loadQuestions(){
+  const res = await fetch("./data/questions.json");
+  const data = await res.json();
+  questions = data.questions || [];
+}
+
+/* ---------------- HOME ---------------- */
 
 function renderHome(){
   pageEl.innerHTML = `
-    <div class="home-hero">
-      <h1 class="home-title">Welcome 👋</h1>
-      <p class="home-sub">Study sheets • Practice questions • Real time exam (50Q / 50min)</p>
+    <h1>Welcome 👋</h1>
+    <p>Study sheets, practice questions & real exam.</p>
+  `;
+}
+
+/* ---------------- STUDY ---------------- */
+
+let sheetIndex = 0;
+let zoom = 1;
+
+function renderStudy(){
+
+  if(!sheets.length){
+    pageEl.innerHTML = `<h2>No sheets found</h2>`;
+    return;
+  }
+
+  const s = sheets[sheetIndex];
+
+  pageEl.innerHTML = `
+    <h1>📘 Study Sheets</h1>
+
+    <div class="controls">
+      <button onclick="prevSheet()">⬅ Prev</button>
+      <button onclick="nextSheet()">Next ➡</button>
+      <button onclick="zoomIn()">+</button>
+      <button onclick="zoomOut()">−</button>
+    </div>
+
+    <div class="viewer">
+      <img id="sheetImg" src="${s.image}">
     </div>
   `;
 }
 
-function renderStudy(){
-  pageEl.innerHTML = `
-    <h1 class="h1">📘 Study Sheets</h1>
-    <p class="lead">Your sheet viewer is already working. Next step: keep adding pages in data/sheets.json</p>
-  `;
+function nextSheet(){
+  sheetIndex = (sheetIndex+1) % sheets.length;
+  renderStudy();
 }
+
+function prevSheet(){
+  sheetIndex = (sheetIndex-1+sheets.length)%sheets.length;
+  renderStudy();
+}
+
+function zoomIn(){
+  zoom += .1;
+  document.getElementById("sheetImg").style.transform=`scale(${zoom})`;
+}
+
+function zoomOut(){
+  zoom -= .1;
+  document.getElementById("sheetImg").style.transform=`scale(${zoom})`;
+}
+
+/* ---------------- PRACTICE ---------------- */
+
+let qIndex = 0;
 
 function renderPractice(){
-  pageEl.innerHTML = `
-    <h1 class="h1">📝 Practice Questions</h1>
-    <p class="lead">Questions will show here from data/questions.json</p>
+
+  if(!questions.length){
+    pageEl.innerHTML=`<h2>No questions</h2>`;
+    return;
+  }
+
+  const q = questions[qIndex];
+
+  const opts = q.options.map(o=>`
+    <label>
+      <input type="radio" name="opt" value="${o.id}">
+      ${o.fi}
+    </label><br>
+  `).join("");
+
+  pageEl.innerHTML=`
+    <h1>📝 Practice Questions</h1>
+
+    <p>${q.question_fi}</p>
+
+    ${opts}
+
+    <button onclick="nextQ()">Next</button>
   `;
 }
+
+function nextQ(){
+  qIndex=(qIndex+1)%questions.length;
+  renderPractice();
+}
+
+/* ---------------- EXAM ---------------- */
 
 function renderExam(){
-  pageEl.innerHTML = `
-    <h1 class="h1">⏱️ Real Time Exam</h1>
-    <p class="lead">50 Questions • 50 Minutes (timer system next step)</p>
+  pageEl.innerHTML=`
+    <h1>⏱️ Real Time Exam</h1>
+    <p>50 Questions / 50 Minutes</p>
   `;
 }
 
-/* --------- ROUTER ---------- */
+/* ---------------- ROUTER ---------------- */
 
 function router(){
+
   const hash = location.hash || "#/home";
 
-  renderNav(hash);
-
-  if(hash === "#/home") renderHome();
-  else if(hash === "#/study") renderStudy();
-  else if(hash === "#/practice") renderPractice();
-  else if(hash === "#/exam") renderExam();
-  else renderHome();
+  if(hash==="#/home") renderHome();
+  else if(hash==="#/study") renderStudy();
+  else if(hash==="#/practice") renderPractice();
+  else if(hash==="#/exam") renderExam();
 }
 
-window.addEventListener("hashchange", router);
-router();
+window.addEventListener("hashchange",router);
+
+/* ---------------- INIT ---------------- */
+
+(async function init(){
+  await loadSheets();
+  await loadQuestions();
+  router();
+})();
