@@ -7,12 +7,12 @@ let sheets = [];
 /* ---------------- NAV (Dynamic Menu) ---------------- */
 
 const NAV_ITEMS = [
-  { hash:"#/home",     label:"Home",               icon:"🏠" },
-  { hash:"#/study",    label:"Study Sheets",       icon:"📘" },
+  { hash:"#/home",     label:"Home",            icon:"🏠" },
+  { hash:"#/study",    label:"Study Sheets",    icon:"📘" },
   { hash:"#/practice", label:"Practice Questions", icon:"📝" },
-  { hash:"#/exam",     label:"Real Time Exam",     icon:"⏱️" },
-  { hash:"#/progress", label:"Progress",           icon:"📈" },
-  { hash:"#/resources",label:"Resources / FAQ",    icon:"🔗" }
+  { hash:"#/exam",     label:"Real Time Exam",  icon:"⏱️" },
+  { hash:"#/progress", label:"Progress",        icon:"📈" },
+  { hash:"#/resources",label:"Resources / FAQ", icon:"🔗" }
 ];
 
 function renderNav(currentHash){
@@ -64,45 +64,15 @@ async function loadSheets(){
   }
 }
 
-/* ---------------- HOME (PROFESSIONAL) ---------------- */
+/* ---------------- HOME ---------------- */
 
 function renderHome(){
+  // ✅ Home text top e thakbe (no center hero)
   pageEl.innerHTML = `
-    <section class="home-hero">
-      <div class="hero-card">
-        <div class="hero-badge">FINLAND • TAXI EXAM</div>
-        <h1 class="hero-title">Taxi Exam Preparation</h1>
-        <p class="hero-sub">
-          Study Sheets • Practice Questions • Real Time Exam (50Q / 50min) <br/>
-          বাংলা + ফিনিশ—দুইভাবেই প্র্যাকটিস করার জন্য প্ল্যাটফর্ম।
-        </p>
-
-        <div class="hero-actions">
-          <a class="btn primary" href="#/study">📘 Start Study</a>
-          <a class="btn" href="#/practice">📝 Practice</a>
-          <a class="btn" href="#/exam">⏱️ Real Exam</a>
-        </div>
-
-        <div class="hero-stats">
-          <div class="stat">
-            <div class="stat-num">${sheets?.length ? sheets.length : "—"}</div>
-            <div class="stat-label">Sheets</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">${questions?.length ? questions.length : "—"}</div>
-            <div class="stat-label">Questions</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">50</div>
-            <div class="stat-label">Exam Q</div>
-          </div>
-          <div class="stat">
-            <div class="stat-num">50m</div>
-            <div class="stat-label">Timer</div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <div style="padding-top:6px;">
+      <h1 class="h1" style="margin-top:0;">Welcome 👋</h1>
+      <p class="lead">Study sheets, practice questions & real exam.</p>
+    </div>
   `;
 }
 
@@ -173,7 +143,7 @@ function renderStudy(){
 
         <div class="row-gap">
           <select class="select" id="pageJump">${buildPageOptions()}</select>
-          <a class="btn" href="${src}" target="_blank" rel="noopener">Open Full</a>
+          <a class="btn" href="${src}" target="_blank">Open Full</a>
         </div>
       </div>
 
@@ -185,7 +155,7 @@ function renderStudy(){
 
         <button class="btn" id="btnFit">Fit/Reset</button>
         <button class="btn" id="btnZoomOut">−</button>
-        <div class="pill">
+        <div class="pill" style="padding:6px 10px;border-radius:999px;border:1px solid var(--line);">
           Zoom: <b id="zoomLabel">Fit</b>
         </div>
         <button class="btn" id="btnZoomIn">+</button>
@@ -193,8 +163,9 @@ function renderStudy(){
 
       <div class="hr"></div>
 
-      <div id="imgWrap" class="imgWrap">
-        <img id="sheetImg" src="${src}" alt="sheet" class="sheetImg" />
+      <div id="imgWrap" style="overflow:auto; max-height:70vh; border-radius:12px;">
+        <img id="sheetImg" src="${src}" alt="sheet"
+             style="display:block; width:100%; border-radius:12px; border:1px solid var(--line);" />
       </div>
     </div>
   `;
@@ -213,16 +184,6 @@ function renderStudy(){
 
   const img = document.getElementById("sheetImg");
   img.onload = () => applyZoom();
-
-  window.onkeydown = (e) => {
-    if((location.hash || "#/home") !== "#/study") return;
-
-    if(e.key === "ArrowRight") goNext();
-    if(e.key === "ArrowLeft") goPrev();
-    if(e.key === "+" || e.key === "=") { fitMode = false; zoom = clamp(zoom + 0.1, 1, 3); applyZoom(); }
-    if(e.key === "-" || e.key === "_") { fitMode = false; zoom = clamp(zoom - 0.1, 1, 3); applyZoom(); }
-    if(e.key.toLowerCase() === "f") { fitMode = true; zoom = 1; applyZoom(); }
-  };
 }
 
 function updateStudyUI(resetScroll){
@@ -275,7 +236,7 @@ function renderPractice(){
     <label class="option">
       <input type="radio" name="opt" value="${o.id}">
       <div>
-        <div class="opt-fi">${o.fi || ""}</div>
+        <div style="font-weight:700">${o.fi || ""}</div>
         <div class="muted small">${o.bn || ""}</div>
       </div>
     </label>
@@ -284,7 +245,7 @@ function renderPractice(){
   pageEl.innerHTML = `
     <h1 class="h1">📝 Practice Questions</h1>
     <div class="qbox">
-      <div class="q-title">${q.question_fi || ""}</div>
+      <div><b>${q.question_fi || ""}</b></div>
       <div class="muted">${q.question_bn || ""}</div>
 
       ${opts}
@@ -318,8 +279,8 @@ function submitPractice(){
 
   document.getElementById("result").innerHTML =
     (val.value === q.answer)
-      ? `<div class="alert ok">✅ Correct</div>`
-      : `<div class="alert bad">❌ Wrong</div>`;
+      ? `<div class="alert">✅ Correct</div>`
+      : `<div class="alert">❌ Wrong</div>`;
 }
 
 function nextPractice(){
@@ -338,24 +299,17 @@ function renderExam(){
 }
 
 function renderProgress(){
-  pageEl.innerHTML = `
-    <h1 class="h1">📈 Progress</h1>
-    <p class="lead">Coming soon.</p>
-  `;
+  pageEl.innerHTML = `<h1 class="h1">📈 Progress</h1><p class="lead">Coming soon.</p>`;
 }
 
 function renderResources(){
-  pageEl.innerHTML = `
-    <h1 class="h1">🔗 Resources / FAQ</h1>
-    <p class="lead">Links will be added.</p>
-  `;
+  pageEl.innerHTML = `<h1 class="h1">🔗 Resources / FAQ</h1><p class="lead">Links will be added.</p>`;
 }
 
 /* ---------------- ROUTER ---------------- */
 
 function router(){
   const hash = location.hash || "#/home";
-
   renderNav(hash);
 
   if(hash === "#/home") renderHome();
